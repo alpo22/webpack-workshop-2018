@@ -1,0 +1,9 @@
+How use it:
+
+Via webpack.config.js file (though not needed in webpack 4)
+or via CLI
+or via Node API
+
+
+You can append arguments at CLI with `--` flag
+eg: `npm run myScript -- extraArg1 extraArg2`

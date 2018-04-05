@@ -1,0 +1,54 @@
+Starting out right
+******************
+
+With no config in v4:
+  it tries to start in `./src[/index.js]` as the entrypoint.
+  it bundles for "production" mode.
+  it outputs to `/dist/main.js`
+  when there are multiple entry points and no output configured, it outputs with the same name.
+
+Can use --verbose flag to see some details of bundling.
+Can use --watch to rebuild when files change
+
+In prod mode, it does tree-shaking and removes dead code.  E.g. if you import "lodash" but only use 1 of the 585 sub-modules, it will remove the other 584 (even if you do `import * as _ from lodash`), keeping the bundled file size small.
+
+
+Multiple entry points/multiple unique graphs.  When not using a SPA.  In this case, the "entry" property in config is an object:
+entry: {
+  accounts: "./src/index.js",
+  results: "./src/index2.js"
+}
+
+Configuration documentation: http://webpack.js.org/configuration
+
+Look at package.json for what installed
+html-webpack-plugin
+webpack-dev-server
+
+The config is just JS, so abstract out common parts (from the dev and prod config files).
+
+You can pipe in environment variables by passing in `--env.key value`, eg:
+scripts: {
+  "webpack-dev": "npm run webpack -- --mode development --env.name jamie",
+}
+Then in the config:
+module.exports = (env) => {
+  //can access env.name
+}
+
+
+webpack-dev-server listens for changes using web sockets, to automatically reload.
+html-webpack-plugin generates the index.html file by default
+Using these two in combination doesnt write anything to dist, it does it all from memory and loads instantly.
+
+
+
+The plugin "url-loader" will base-64 images and put them into JS (if the size is smaller than "limit")
+
+
+Dev config options (see documentation in "Devtool" section):
+devtool: "sourcemap"
+devtool: "eval" //the default
+
+Use the "--hot" flag in dev mode.
+Use mini-css-extract plugin in prod mode.

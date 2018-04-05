@@ -1,0 +1,38 @@
+Why do we need webpack?
+
+Solves a bunch of problems.
+
+History:
+
+Problem: browser can only synchronously download X files, and multiple req's take time
+Solution: put everything in one file, but that causes another problem
+
+Problem: global scope
+Solution: use iife's, but that causes another problem
+
+Problem: iife's slow down browser
+Problem: full rebuilds every time
+Problem: dead code (like when pull in lodash or another library)
+Problem: no dynamic loading JS files
+Solution: node.js i think? and javascript modules 1.0 (commonJS): like const x = require("/myfile.js")
+
+  When include a file:
+  const _ = require("lodash");
+  it looks in node_modules, in "package.json", looking for "main" property - which is the entrypoint.
+
+  And you can "require" from within another "require", so we are creating a tree/hierarchy.
+  This allows Node to do mass distribution (easily installing packages via NPM).
+
+Problem: no browser support
+Problem: no live bindings (meaning circular references will cause errors)
+Problem: syncrhonous module resolution, slow to load a node application
+
+Solution: bundlers (browserify, requirejs) that make code for node.js work in the browser
+Problems: no way to code split, lots of different formats (AMD, CommonJS, UMD)
+
+
+
+Webpack is a module bundler.
+*Lets you write a module in any format, and compiles them to be readable by the browser.*
+
+Supports code-splitting.

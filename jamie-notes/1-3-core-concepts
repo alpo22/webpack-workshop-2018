@@ -1,0 +1,28 @@
+The core concepts
+
+"Entry":
+- This is the first javascript file to load to "kick off" your app. Webpack uses this as the starting point[for bundling].
+- Webpack goes in that file and looks for other dependencies, goes to them (digs deeper) and repeats.
+
+"Output":
+- Now webpack has a graph of dependencies and understands what needs what.
+- It dumps the bundle here
+
+"Loaders and rules":
+- loader is on a "per file" basis
+- a loader tells webpack how to modify a file _before_ it gets into the graph
+- loaders are middleware.  they are functions that take in a source file, and return it in a modified state
+- available props:
+  test
+  use
+  [include]
+  [exclude]
+  [issuer]
+  [enforce]
+- transforms everything into JS (css, html, svgs) [not fully true in v4]
+
+"Plugins"
+Allows you to hook into the compilation lifecycle.
+The most foundational. 80% of webpack runs on its own plugins.
+They are just objects with an `apply` on the prototype chain.
+To use, require in the config, put in `plugins` section, and create a new instance of it.
