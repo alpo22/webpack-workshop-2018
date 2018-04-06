@@ -1,0 +1,4 @@
+Webpack your favourite npm package.
+
+I think what he meant was to download the source of an npm package (e.g. https://www.npmjs.com/package/pad-left which is https://github.com/jonschlinkert/pad-left) then include it in a bundle...?
+
