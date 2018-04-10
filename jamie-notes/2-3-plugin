@@ -1,0 +1,4 @@
+Tapable - plugin library
+
+- simply a class with an "apply" method
+- To use, require in the config, put in `plugins` section, and create a new instance of it.

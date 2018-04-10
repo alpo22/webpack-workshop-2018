@@ -1,0 +1,5 @@
+A loader is just a function that takes a source and returns a new source.
+
+webpack.js.org/api/loaders
+
+a loader returns JS code as a string

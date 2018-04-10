@@ -22,6 +22,8 @@ Customizing anything (loaders, plugins)
 Make your own toolchain
 
 
-Add the "import cost" plugin, which tells you how big a file will be when you're importing it (though mine is not working)
+Add the "import cost" plugin to editor, which tells you how big a file will be when you're importing it (though mine is not working)
 
-A strategy for having only including dependencies only once: "Mono repo", a root package.json, and a "packages" folder. Maybe worth looking at further.
+A strategy for only including dependencies once: "Mono repo", a root package.json, and a "packages" folder. Maybe worth looking at further.
+
+He didnt go over "tree-shaking", but look into it.

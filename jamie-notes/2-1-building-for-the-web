@@ -1,0 +1,122 @@
+Top 3 web-page load-time causes:
+
+- js initial download
+- css initial download
+- # of network req's
+
+Stats: https://storage.googleapis.com/doubleclick-prod/documents/The_Need_for_Mobile_Speed_-_FINAL.pdf
+
+CSS selector-matching requires the most of the browser's processing power when page rendering
+
+
+Goals:
+max 200kb uncompressed initial JS (gzip only improves download speed, but not rendering power)
+max 100kb uncompressed initial CSS
+max of 6 initial http network calls or max of 20 http/2 initial network calls
+90% code coverage (only 10% code un-used)
+
+Every 100kb => 1s of load time [on mobile?]
+
+Chrome has a "Coverage" tag, that shows you the network traffic and how much of it is un-used (open console, press 'esc', press '...' icon and then 'Coverage').  Click on the file, the "Sources" tab will show you which lines are used.
+
+You will see pages have like 80%+ un-used code.  Solution: code splitting!
+
+
+Code Splitting
+**************
+The process of splitting pieces of your code into async chunks *at build time*
+It should not be an automatic process, it should be part of the UX consideration.
+
+There is "static" and "[pseudo] dynamic" code splitting.
+
+Static:
+-------
+  Use it when have heavy javascript/library
+  Use it on anything temporal (anything not visible then becomes visible, e.g: modal, tooltip, a route)
+
+  Do it like this:
+  const getModal = () => import("./path/to/modal.js");
+  ...
+  then in my body
+  <button
+    onClick={() => {
+      getModal().then(module => {
+        module.initModal(document.getElementById("Modal"));
+      })
+    }}
+  />
+
+  that "import" is not part of WebPack, its built into JS: https://developers.google.com/web/updates/2017/11/dynamic-import.  Webpack sees it when building its tree, bundles it and puts it in its own chunk.
+  Webpack also wont create duplicate chunks (if import that modal twice).
+
+  Dont use "commons chunking", you're still downloading it upfront.  it doesnt help with parse/evaluate/execution.
+
+Dynamic:
+--------
+  const getTheme = (themeName) => import (`.src/themes/${themeName}`);
+  //Webpack creates a chunk for each file in `./src/themes`
+
+  When to use:
+    A/B testing
+    Theming
+    Convenience
+
+
+
+
+*You can do this on CSS too, with `mini-css` package (I think mini-css-extract-plugin)*
+
+There is documentation on configuring code splitting on the webpack site.
+
+
+
+
+** Do not codesplit libraries; leave it up to the consumer. Build it into the component to allow for it.  Eg in library component do: **
+
+if (typoef this.menu === Function) {
+  //using code splitting
+  this.menu().then((menuModule) => {
+    menuModule.open();
+  })
+} else {
+  //not using code splitting
+  this.menu.open();
+}
+
+To switch between code-splitting and not, they'd just have to change one line:
+import menu from "./Menu";            //not code split
+const menu = () => import("./Menu")   //code split
+
+
+
+
+Babel runs first and can break Webpack code-splitting.  You can solve by adding `babel-plugin-syntax-dynamic-import` and in .babelrc file, set "module" to false.
+
+
+
+Look at webpack.optimize.AggressiveSplittingPlugin()
+
+
+
+Can use "Service workers" with webpack (for caching...?):
+offline-plugin (https://github.com/NekR/offline-plugin)
+workbox (https://github.com/GoogleChrome/workbox)
+
+
+
+
+Performance Hints
+-----------------
+Webpack can notify you, or die, if the bundle gets too big (e.g. someone imports a giant library): webpack.js.org/configuration/performance
+Add this to webpack config:
+  performance: {
+    hints: "error",
+    maxAssetSize: 15000
+  }
+
+There's also a visualisation plugin to demonstrate the size of the chunks, and what each one consists of: webpack-bundle-analyzer
+It helps you triage, and see what modules are large (by chunk), and maybe things you import multiple times.
+
+Webpack cannot tree-shake from a dynamic import. Eg if you do
+import("date-fns") but only use "dateAdd", webpack can't eliminate all the other functions.  So you'd have to change it to import("date-fns/dateAdd")
+
